@@ -105,47 +105,6 @@ def text_to_textnodes(text):
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
     return nodes
 
-def extract_title(markdown):
-    lines = markdown.splitlines()
-
-    for line in lines:
-        if line.startswith("# "):
-            # Remove the "# " prefix and strip any remaining whitespace
-            return line[2:].strip()
-    
-    # If we get here, we've checked all lines and found no header
-    raise Exception("No header found")
-
-
-def generate_page(from_path, template_path, dest_path):
-    # 1. Print a message
-    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
-    
-    # 2. Read the markdown file
-    with open(from_path, 'r') as f:
-        markdown_content = f.read()
-    
-    # 3. Read the template file
-    with open(template_path, 'r') as f:
-        template_content = f.read()
-    
-    # 4. Convert markdown to HTML
-    html_node = markdown_to_html_node(markdown_content)
-    html_content = html_node.to_html()
-    
-    # 5. Extract the title
-    title = extract_title(markdown_content)
-    
-    # 6. Replace placeholders in the template
-    final_html = template_content.replace("{{ Title }}", title).replace("{{ Content }}", html_content)
-    
-    # 7. Create destination directory if it doesn't exist
-    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-    
-    # 8. Write the final HTML to the destination
-    with open(dest_path, 'w') as f:
-        f.write(final_html)
-
 def extract_markdown_images(text):
     pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
     matches = re.findall(pattern, text)

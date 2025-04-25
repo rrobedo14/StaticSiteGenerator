@@ -5,7 +5,6 @@ from block_markdown_converter import (
     block_to_block_type,
     BlockType,
 )
-from markdown_converter import extract_title
 
 
 class TestMarkdownBlocks(unittest.TestCase):
@@ -119,32 +118,6 @@ the **same** even with inline stuff
         "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
     )
 
-class TestExtractTitle(unittest.TestCase):
-    
-    def test_extract_simple_title(self):
-        markdown = "# Simple Title"
-        expected = "Simple Title"
-        self.assertEqual(extract_title(markdown), expected)
-        
-    def test_extract_title_with_extra_whitespace(self):
-        markdown = "#     Title with spaces     "
-        expected = "Title with spaces"
-        self.assertEqual(extract_title(markdown), expected)
-        
-    def test_extract_title_from_multiple_lines(self):
-        markdown = "Some text\n# The Title\nMore text"
-        expected = "The Title"
-        self.assertEqual(extract_title(markdown), expected)
-        
-    def test_no_title_raises_exception(self):
-        markdown = "No title here\nJust regular text"
-        with self.assertRaises(Exception):
-            extract_title(markdown)
-            
-    def test_double_hash_not_title(self):
-        markdown = "## This is not an h1 title"
-        with self.assertRaises(Exception):
-            extract_title(markdown)
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,11 +2,13 @@ import os
 import shutil
 
 from copystatic import copy_files_recursive
-from markdown_converter import generate_page
-
+from generate_content import generate_pages_recursive
 
 dir_path_static = "./static"
 dir_path_public = "./public"
+dir_path_content = "./content"
+template_path = "./template.html"
+
 
 def main():
     print("Deleting public directory...")
@@ -16,6 +18,12 @@ def main():
     print("Copying static files to public directory...")
     copy_files_recursive(dir_path_static, dir_path_public)
 
-    generate_page("content/index.md", "template.html", "public/index.html")
+    print("Generating pages recursively...")
+    generate_pages_recursive(
+        dir_path_content,  # The content directory to crawl
+        template_path,     # The template to use
+        dir_path_public    # The destination directory
+    )
 
 main()
+
