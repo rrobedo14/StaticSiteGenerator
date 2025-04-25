@@ -13,7 +13,7 @@ def extract_title(markdown):
     raise Exception("No header found")
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     # 1. Print a message
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     
@@ -34,6 +34,8 @@ def generate_page(from_path, template_path, dest_path):
     
     # 6. Replace placeholders in the template
     final_html = template_content.replace("{{ Title }}", title).replace("{{ Content }}", html_content)
+    final_html = final_html.replace('href="/', f'href="{basepath}')
+    final_html = final_html.replace('src="/', f'src="{basepath}')
     
     # 7. Create destination directory if it doesn't exist
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
@@ -43,7 +45,7 @@ def generate_page(from_path, template_path, dest_path):
         f.write(final_html)
         
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     # Check if the content directory exists
     if not os.path.exists(dir_path_content):
         print(f"Warning: Content directory {dir_path_content} does not exist")
@@ -70,7 +72,7 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
                 
                 # Generate the page
                 print(f"Processing {rel_path} -> {os.path.relpath(dest_path, dest_dir_path)}")
-                generate_page(entry_path, template_path, dest_path)
+                generate_page(entry_path, template_path, dest_path, basepath)
         elif os.path.isdir(entry_path):
             # It's a directory, recursively process it
             new_content_dir = entry_path
@@ -78,4 +80,4 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
             # Ensure the destination directory exists
             os.makedirs(new_dest_dir, exist_ok=True)
             # Recursively process the subdirectory
-            generate_pages_recursive(new_content_dir, template_path, new_dest_dir)
+            generate_pages_recursive(new_content_dir, template_path, new_dest_dir, basepath)
